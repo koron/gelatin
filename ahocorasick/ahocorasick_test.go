@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-func checkNode(t *testing.T, node trie.Node, size int, data NodeData) {
+func checkNode(t *testing.T, node trie.Node, size int, data nodeData) {
 	if node == nil {
 		t.Error("Nil node:", data)
 	}
 	if node.Size() != size {
 		t.Errorf("Unexpected childrens: %d != %d", node.Size(), size)
 	}
-	d := node.Value().(*NodeData)
+	d := node.Value().(*nodeData)
 	if d == nil {
 		t.Error("Nil data:", data, node)
 	}
@@ -30,14 +30,14 @@ func checkNode(t *testing.T, node trie.Node, size int, data NodeData) {
 	}
 }
 
-func invalidData(failure trie.Node) NodeData {
-	return NodeData{
+func invalidData(failure trie.Node) nodeData {
+	return nodeData{
 		failure: failure.(*trie.TernaryNode),
 	}
 }
 
-func validData(pattern string, value interface{}, failure trie.Node) NodeData {
-	return NodeData{
+func validData(pattern string, value interface{}, failure trie.Node) nodeData {
+	return nodeData{
 		pattern: &pattern,
 		value:   value,
 		failure: failure.(*trie.TernaryNode),

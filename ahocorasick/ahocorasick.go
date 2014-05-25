@@ -14,7 +14,7 @@ type Match struct {
 	Value   interface{}
 }
 
-type NodeData struct {
+type nodeData struct {
 	pattern *string
 	value   interface{}
 	failure *trie.TernaryNode
@@ -27,7 +27,7 @@ func New() *Matcher {
 }
 
 func (m *Matcher) Add(pattern string, v interface{}) {
-	m.trie.Put(pattern, &NodeData{
+	m.trie.Put(pattern, &nodeData{
 		pattern: &pattern,
 		value:   v,
 	})
@@ -36,7 +36,7 @@ func (m *Matcher) Add(pattern string, v interface{}) {
 func (m *Matcher) Compile() error {
 	m.trie.Balance()
 	root := m.trie.Root().(*trie.TernaryNode)
-	root.SetValue(&NodeData{failure: root})
+	root.SetValue(&nodeData{failure: root})
 	// fill data.failure of each node.
 	trie.EachWidth(m.trie, func(n trie.Node) bool {
 		parent := n.(*trie.TernaryNode)
@@ -50,9 +50,9 @@ func (m *Matcher) Compile() error {
 }
 
 func fillFailure(curr, root, parent *trie.TernaryNode) {
-	data := nodeData(curr)
+	data := getNodeData(curr)
 	if data == nil {
-		data = &NodeData{}
+		data = &nodeData{}
 		curr.SetValue(data)
 	}
 	if parent == root {
@@ -61,7 +61,7 @@ func fillFailure(curr, root, parent *trie.TernaryNode) {
 	}
 	// Determine failure node.
 	r := curr.Label()
-	node := nodeDataFailure(parent, root)
+	node := getNodeFailure(parent, root)
 	for {
 		next, _ := node.Get(r).(*trie.TernaryNode)
 		if next != nil {
@@ -70,7 +70,7 @@ func fillFailure(curr, root, parent *trie.TernaryNode) {
 		} else if node == root {
 			break
 		}
-		node = nodeDataFailure(node, root)
+		node = getNodeFailure(node, root)
 	}
 	data.failure = node
 }
@@ -102,13 +102,13 @@ func nextState(curr, root *trie.TernaryNode, r rune) *trie.TernaryNode {
 		} else if curr == root {
 			return root
 		}
-		curr = nodeDataFailure(curr, root)
+		curr = getNodeFailure(curr, root)
 	}
 }
 
 func fireAll(curr, root *trie.TernaryNode, ch chan<- Match, idx int) {
 	for curr != root {
-		data := nodeData(curr)
+		data := getNodeData(curr)
 		if data.pattern != nil {
 			ch <- Match{
 				Index:   idx - len(*data.pattern) + 1,
@@ -120,13 +120,13 @@ func fireAll(curr, root *trie.TernaryNode, ch chan<- Match, idx int) {
 	}
 }
 
-func nodeData(node *trie.TernaryNode) *NodeData {
-	d, _ := node.Value().(*NodeData)
+func getNodeData(node *trie.TernaryNode) *nodeData {
+	d, _ := node.Value().(*nodeData)
 	return d
 }
 
-func nodeDataFailure(node, root *trie.TernaryNode) *trie.TernaryNode {
-	next := nodeData(node).failure
+func getNodeFailure(node, root *trie.TernaryNode) *trie.TernaryNode {
+	next := getNodeData(node).failure
 	if next == nil {
 		return root
 	}
