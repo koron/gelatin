@@ -1,0 +1,8 @@
+# Gelatin
+
+Golang misc libraries.
+
+Name        |Description
+------------|------------
+ahocorasick |Aho-Corasick string matcher
+trie        |Retrieval tree
