@@ -103,7 +103,7 @@ func assertMatches(t *testing.T, exp, act []Match) {
 			t.Errorf("Value not matched at #%d\n", i)
 			dump = true
 		}
-		if (dump) {
+		if dump {
 			t.Logf("  expected: %+v", e)
 			t.Logf("  actually: %+v", a)
 		}
