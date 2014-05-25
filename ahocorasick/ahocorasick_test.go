@@ -1,7 +1,7 @@
 package ahocorasick
 
 import (
-	"./trie"
+	"github.com/koron/gelatin/trie"
 	"testing"
 )
 
@@ -44,7 +44,7 @@ func validData(pattern string, value interface{}, failure trie.Node) NodeData {
 	}
 }
 
-func TestBasic(t *testing.T) {
+func newTestMatcher() *Matcher {
 	m := New()
 	m.Add("ab", 2)
 	m.Add("bc", 4)
@@ -52,7 +52,11 @@ func TestBasic(t *testing.T) {
 	m.Add("d", 7)
 	m.Add("abcde", 10)
 	m.Compile()
+	return m
+}
 
+func TestTree(t *testing.T) {
+	m := newTestMatcher()
 	// Check tree structure.
 	r := m.trie.Root()
 	checkNode(t, r, 3, invalidData(r))
@@ -76,4 +80,44 @@ func TestBasic(t *testing.T) {
 	checkNode(t, n9, 1, invalidData(n7))
 	n10 := n9.Get('e')
 	checkNode(t, n10, 0, validData("abcde", 10, r))
+}
+
+func assertMatches(t *testing.T, exp, act []Match) {
+	if len(act) != len(exp) {
+		t.Errorf("[]Match length is not %d (%d)", len(exp), len(act))
+		t.Logf("  expected: %v", exp)
+		t.Logf("  actually: %v", act)
+	}
+	for i, e := range exp {
+		dump := false
+		a := act[i]
+		if a.Index != e.Index {
+			t.Errorf("Index not matched at #%d\n", i)
+			dump = true
+		}
+		if a.Pattern != e.Pattern {
+			t.Errorf("Pattern not matched at #%d\n", i)
+			dump = true
+		}
+		if a.Value != e.Value {
+			t.Errorf("Value not matched at #%d\n", i)
+			dump = true
+		}
+		if (dump) {
+			t.Logf("  expected: %+v", e)
+			t.Logf("  actually: %+v", a)
+		}
+	}
+}
+
+func TestResults(t *testing.T) {
+	m := newTestMatcher()
+
+	r1 := MatchAll(m, "abcde")
+	assertMatches(t, []Match{
+		Match{0, "ab", 2},
+		Match{1, "bc", 4},
+		Match{3, "d", 7},
+		Match{0, "abcde", 10},
+	}, r1)
 }

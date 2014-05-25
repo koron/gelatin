@@ -1,7 +1,7 @@
 package ahocorasick
 
 import (
-	"./trie"
+	"github.com/koron/gelatin/trie"
 )
 
 type Matcher struct {
@@ -9,7 +9,6 @@ type Matcher struct {
 }
 
 type Match struct {
-	Text    string
 	Index   int
 	Pattern string
 	Value   interface{}
@@ -91,28 +90,28 @@ func (m *Matcher) startMatch(text string, ch chan<- Match) {
 		if curr == root {
 			continue
 		}
-		fireAll(curr, root, ch, text, i)
+		fireAll(curr, root, ch, i)
 	}
 }
 
 func nextState(curr, root *trie.TernaryNode, r rune) *trie.TernaryNode {
-	for curr != root {
-		next := curr.Get(r).(*trie.TernaryNode)
+	for {
+		next, _ := curr.Get(r).(*trie.TernaryNode)
 		if next != nil {
 			return next
+		} else if curr == root {
+			return root
 		}
 		curr = nodeDataFailure(curr, root)
 	}
-	return curr
 }
 
-func fireAll(curr, root *trie.TernaryNode, ch chan<- Match, text string, idx int) {
+func fireAll(curr, root *trie.TernaryNode, ch chan<- Match, idx int) {
 	for curr != root {
 		data := nodeData(curr)
 		if data.pattern != nil {
 			ch <- Match{
-				Text:    text,
-				Index:   idx - len(*data.pattern),
+				Index:   idx - len(*data.pattern) + 1,
 				Pattern: *data.pattern,
 				Value:   data.value,
 			}
