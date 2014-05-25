@@ -22,14 +22,14 @@ func (t *TernaryTrie) Put(k string, v interface{}) Node {
 
 func (t *TernaryTrie) Size() int {
 	count := 0
-	EachDepth(t, func (Node) bool {
+	EachDepth(t, func(Node) bool {
 		count++
 		return true
 	})
-	return count;
+	return count
 }
 
-func (t *TernaryTrie) Balance() () {
+func (t *TernaryTrie) Balance() {
 	EachDepth(t, func(n Node) bool {
 		n.(*TernaryNode).Balance()
 		return true
