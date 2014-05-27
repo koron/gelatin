@@ -60,19 +60,8 @@ func fillFailure(curr, root, parent *trie.TernaryNode) {
 		return
 	}
 	// Determine failure node.
-	r := curr.Label()
-	node := getNodeFailure(parent, root)
-	for {
-		next, _ := node.Get(r).(*trie.TernaryNode)
-		if next != nil {
-			node = next
-			break
-		} else if node == root {
-			break
-		}
-		node = getNodeFailure(node, root)
-	}
-	data.failure = node
+	fnode := getNextNode(getNodeFailure(parent, root), root, curr.Label())
+	data.failure = fnode
 }
 
 func (m *Matcher) Match(text string) <-chan Match {
@@ -86,7 +75,7 @@ func (m *Matcher) startMatch(text string, ch chan<- Match) {
 	root := m.trie.Root().(*trie.TernaryNode)
 	curr := root
 	for i, r := range text {
-		curr = nextState(curr, root, r)
+		curr = getNextNode(curr, root, r)
 		if curr == root {
 			continue
 		}
@@ -94,15 +83,15 @@ func (m *Matcher) startMatch(text string, ch chan<- Match) {
 	}
 }
 
-func nextState(curr, root *trie.TernaryNode, r rune) *trie.TernaryNode {
+func getNextNode(node, root *trie.TernaryNode, r rune) *trie.TernaryNode {
 	for {
-		next, _ := curr.Get(r).(*trie.TernaryNode)
+		next, _ := node.Get(r).(*trie.TernaryNode)
 		if next != nil {
 			return next
-		} else if curr == root {
+		} else if node == root {
 			return root
 		}
-		curr = getNodeFailure(curr, root)
+		node = getNodeFailure(node, root)
 	}
 }
 
