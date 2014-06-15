@@ -77,6 +77,7 @@ func EachWidth(t Trie, proc func(Node) bool) {
 type Node interface {
 	Get(k rune) Node
 	Dig(k rune) (Node, bool)
+	HasChildren() bool
 	Size() int
 	Each(func(Node) bool)
 	RemoveAll()

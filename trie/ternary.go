@@ -87,6 +87,14 @@ func (n *TernaryNode) Dig(k rune) (Node, bool) {
 	}
 }
 
+func (n *TernaryNode) FirstChild() *TernaryNode {
+	return n.firstChild
+}
+
+func (n *TernaryNode) HasChildren() bool {
+	return n.firstChild != nil
+}
+
 func (n *TernaryNode) Size() int {
 	if n.firstChild == nil {
 		return 0
