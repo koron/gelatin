@@ -62,7 +62,7 @@ func (n *TernaryNode) Get(k rune) Node {
 	return nil
 }
 
-func (n *TernaryNode) Dig(k rune) (Node, bool) {
+func (n *TernaryNode) Dig(k rune) (node Node, isnew bool) {
 	curr := n.firstChild
 	if curr == nil {
 		n.firstChild = NewTernaryNode(k)
