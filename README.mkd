@@ -1,8 +1,15 @@
 # Gelatin
 
+## Overview
+
 Golang misc libraries.
 
 Name        |Description
 ------------|------------
 ahocorasick |Aho-Corasick string matcher
 trie        |Retrieval tree
+trie0       |Retrieval tree (experimental, generic key version)
+
+## License
+
+MIT License
