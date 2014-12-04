@@ -5,8 +5,9 @@
 Golang misc libraries.
 
 Name        |Description
-------------|------------
+------------|---------------------------------------------------------------
 ahocorasick |Aho-Corasick string matcher
+omap        |Ordered map
 trie        |Retrieval tree
 trie0       |Retrieval tree (experimental, generic key version)
 

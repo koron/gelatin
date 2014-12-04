@@ -1,5 +1,6 @@
 PACKAGES = \
 	./ahocorasick \
+	./omap \
 	./trie
 
 test:
