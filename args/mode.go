@@ -56,18 +56,20 @@ func (m *Mode) Parse(a ...string) error {
 }
 
 func (m *Mode) parseOption(n string, a ...string) (skip int, err error) {
-	// Split into name and value
+	// Split into name and value, then find option
 	var nv []string
+	var o *Option
 	var p string
 	if len(n) >= 2 && n[1] == '-' {
 		nv = splitOption(n[2:])
+		o = m.options.findLong(nv[0])
 		p = "--"
 	} else {
 		nv = splitOption(n[1:])
+		o = m.options.find(nv[0])
 		p = "-"
 	}
 	// Find an option.
-	o := m.options.findLong(nv[0])
 	if o == nil {
 		return 0, ErrorUnknownOption{Mode: m, Option: p + nv[0]}
 	}

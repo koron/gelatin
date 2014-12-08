@@ -82,9 +82,9 @@ func (o *Option) parse0(name string) error {
 }
 
 func (o *Option) parse1(name, value string) error {
-	if !o.ArgReq{
+	if !o.ArgReq {
 		return ErrorOptionArgNotRequire{o}
 	}
-	o.Values = append(o.Values, "")
+	o.Values = append(o.Values, value)
 	return nil
 }
