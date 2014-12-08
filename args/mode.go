@@ -115,7 +115,15 @@ func (m *Mode) Mode(name string) *Mode {
 }
 
 // DefineOption define a new option.
-func (m *Mode) DefineOption(name, longName, desc string, argReq bool) (*Option, error) {
+func (m *Mode) DefineOption(name, longName, desc string, argReq bool) *Option {
+	o, err := m.defineOption(name, longName, desc, argReq)
+	if err != nil {
+		panic(err)
+	}
+	return o
+}
+
+func (m *Mode) defineOption(name, longName, desc string, argReq bool) (*Option, error) {
 	o := &Option{
 		Name:     name,
 		LongName: longName,
