@@ -60,7 +60,7 @@ func (m *Mode) parseOption(n string, a ...string) (skip int, err error) {
 	}
 	// Find an option.
 	o := m.options.findLong(nv[0])
-	if o != nil {
+	if o == nil {
 		return 0, ErrorUnknownOption{Mode: m, Option: p + nv[0]}
 	}
 	// Parse as option.
