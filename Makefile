@@ -1,5 +1,6 @@
 PACKAGES = \
 	./ahocorasick \
+	./args \
 	./omap \
 	./trie
 

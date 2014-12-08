@@ -1,13 +1,14 @@
 # Gelatin
 
-## Overview
-
 Golang misc libraries.
+
+## Overview
 
 Name        |Description
 ------------|---------------------------------------------------------------
 ahocorasick |Aho-Corasick string matcher
-omap        |Ordered map
+args        |Argument parser (experimental)
+omap        |Not efficient, ordered map
 trie        |Retrieval tree
 trie0       |Retrieval tree (experimental, generic key version)
 
