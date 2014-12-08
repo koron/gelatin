@@ -16,5 +16,5 @@ var Root = &Mode{
 
 // Parse aguments.
 func Parse() error {
-	return Root.Parse(os.Args...)
+	return Root.Parse(os.Args[1:]...)
 }

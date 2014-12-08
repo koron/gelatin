@@ -40,7 +40,7 @@ func (m *Mode) Parse(a ...string) error {
 		i += d
 	}
 	// Parse sub-mode.
-	if !skipMode && m.subModes.Count() > 0 {
+	if !skipMode && m.subModes.Count() > 0 && i < len(a) {
 		if sm := m.Mode(a[i]); sm != nil {
 			err := sm.Parse(a[i+1:]...)
 			if err == nil {
@@ -59,7 +59,7 @@ func (m *Mode) parseOption(n string, a ...string) (skip int, err error) {
 	// Split into name and value
 	var nv []string
 	var p string
-	if n[1] == '-' {
+	if len(n) >= 2 && n[1] == '-' {
 		nv = splitOption(n[2:])
 		p = "--"
 	} else {
