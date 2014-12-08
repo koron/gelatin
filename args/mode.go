@@ -84,7 +84,15 @@ func (m *Mode) parseOption(n string, a ...string) (skip int, err error) {
 }
 
 // DefineMode define a new sub mode.
-func (m *Mode) DefineMode(name, desc string) (*Mode, error) {
+func (m *Mode) DefineMode(name, desc string) *Mode {
+	s, err := m.defineMode(name, desc)
+	if err != nil {
+		panic(err)
+	}
+	return s
+}
+
+func (m *Mode) defineMode(name, desc string) (*Mode, error) {
 	s := &Mode{
 		Name: name,
 		Desc: desc,
