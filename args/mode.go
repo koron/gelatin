@@ -11,8 +11,9 @@ type Mode struct {
 	Name string
 	Desc string
 
-	SelectedSubMode *Mode
-	Args            []string
+	Selected     bool
+	SelectedMode *Mode
+	Args         []string
 
 	options  *options
 	subModes *omap.OMap
@@ -20,14 +21,14 @@ type Mode struct {
 
 // Parse arguments
 func (m *Mode) Parse(a ...string) error {
-	skipSubMode := false
+	skipMode := false
 	i := 0
 	// Parse mode options
 	for ; i < len(a); i++ {
 		s := a[i]
 		if s == "--" {
 			i++
-			skipSubMode = true
+			skipMode = true
 			break
 		} else if s[0] != '-' {
 			break
@@ -39,11 +40,12 @@ func (m *Mode) Parse(a ...string) error {
 		i += d
 	}
 	// Parse sub-mode.
-	if !skipSubMode && m.subModes.Count() > 0 {
-		if sm := m.SubMode(a[i]); sm != nil {
+	if !skipMode && m.subModes.Count() > 0 {
+		if sm := m.Mode(a[i]); sm != nil {
 			err := sm.Parse(a[i+1:]...)
 			if err == nil {
-				m.SelectedSubMode = sm
+				sm.Selected = true
+				m.SelectedMode = sm
 			}
 			return err
 		}
@@ -81,8 +83,8 @@ func (m *Mode) parseOption(n string, a ...string) (skip int, err error) {
 	return skip, err
 }
 
-// DefineSubMode define a new sub mode.
-func (m *Mode) DefineSubMode(name, desc string) (*Mode, error) {
+// DefineMode define a new sub mode.
+func (m *Mode) DefineMode(name, desc string) (*Mode, error) {
 	s := &Mode{
 		Name: name,
 		Desc: desc,
@@ -95,8 +97,8 @@ func (m *Mode) DefineSubMode(name, desc string) (*Mode, error) {
 	return s, nil
 }
 
-// SubMode get a sub mode for that name.
-func (m *Mode) SubMode(name string) *Mode {
+// Mode get a sub mode for that name.
+func (m *Mode) Mode(name string) *Mode {
 	v := m.subModes.Get(name)
 	if v == nil {
 		return nil

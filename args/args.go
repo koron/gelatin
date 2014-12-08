@@ -8,7 +8,8 @@ import (
 
 // Root is root mode.
 var Root = &Mode{
-	Name: "(global)",
+	Name:     "(global)",
+	Selected: true,
 	options:  newOptions(),
 	subModes: omap.New(),
 }
