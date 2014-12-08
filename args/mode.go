@@ -10,7 +10,9 @@ import (
 type Mode struct {
 	Name string
 	Desc string
-	Args []string
+
+	SelectedSubMode *Mode
+	Args            []string
 
 	options  *options
 	subModes *omap.OMap
@@ -39,7 +41,11 @@ func (m *Mode) Parse(a ...string) error {
 	// Parse sub-mode.
 	if !skipSubMode && m.subModes.Count() > 0 {
 		if sm := m.SubMode(a[i]); sm != nil {
-			return sm.Parse(a[i+1:]...)
+			err := sm.Parse(a[i+1:]...)
+			if err == nil {
+				m.SelectedSubMode = sm
+			}
+			return err
 		}
 	}
 	// Parse as args.
