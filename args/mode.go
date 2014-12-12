@@ -77,6 +77,9 @@ func (m *Mode) parseOption(n string, a ...string) (skip int, err error) {
 	if len(nv) >= 2 {
 		err = o.parse1(nv[0], nv[1])
 	} else if o.ArgReq {
+		if len(a) == 0 {
+			return 0, ErrorOptionArgRequire{option: o}
+		}
 		err = o.parse1(nv[0], a[0])
 		skip = 1
 	} else {
