@@ -4,6 +4,7 @@ import (
 	"container/list"
 )
 
+// Trie provide interface of trie data structure.
 type Trie interface {
 	Root() Node
 	Get(KeySeq) Node
@@ -11,10 +12,12 @@ type Trie interface {
 	Size() int
 }
 
+// NewTrie returns a new Trie instance.
 func NewTrie() Trie {
 	return NewTernaryTrie()
 }
 
+// Get finds and returns Node for KeySeq in Trie.
 func Get(t Trie, k KeySeq) Node {
 	if t == nil {
 		return nil
@@ -29,6 +32,7 @@ func Get(t Trie, k KeySeq) Node {
 	return n
 }
 
+// Put adds a pair of key and value to Trie.
 func Put(t Trie, k KeySeq, v interface{}) Node {
 	if t == nil {
 		return nil
@@ -41,6 +45,7 @@ func Put(t Trie, k KeySeq, v interface{}) Node {
 	return n
 }
 
+// EachDepth traverses all nodes in Trie by depth first order.
 func EachDepth(t Trie, proc func(Node) bool) {
 	if t == nil {
 		return
@@ -54,6 +59,7 @@ func EachDepth(t Trie, proc func(Node) bool) {
 	r.Each(f)
 }
 
+// EachWidth traverses all nodes in Trie by breadth first order.
 func EachWidth(t Trie, proc func(Node) bool) {
 	if t == nil {
 		return
@@ -74,6 +80,7 @@ func EachWidth(t Trie, proc func(Node) bool) {
 	}
 }
 
+// Node provides interface for a node of Trie.
 type Node interface {
 	Get(k Key) Node
 	Dig(k Key) (Node, bool)
@@ -87,6 +94,7 @@ type Node interface {
 	SetValue(v interface{})
 }
 
+// Children returns all children of a node.
 func Children(n Node) []Node {
 	children := make([]Node, n.Size())
 	idx := 0

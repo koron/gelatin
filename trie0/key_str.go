@@ -4,8 +4,10 @@ import (
 	"unicode/utf8"
 )
 
+// KeySeqString represents KeySeq for string.
 type KeySeqString string
 
+// Keys implements KeySeq.Keys for string.
 func (s KeySeqString) Keys() []Key {
 	keys := make([]Key, 0, utf8.RuneCountInString(string(s)))
 	for _, r := range s {
@@ -14,8 +16,10 @@ func (s KeySeqString) Keys() []Key {
 	return keys
 }
 
+// KeyRune represents Key for string (rune).
 type KeyRune rune
 
+// Compare implements KeyRune.Compare for string.
 func (r KeyRune) Compare(v Key) Order {
 	r2, ok := v.(KeyRune)
 	if !ok {
@@ -24,7 +28,6 @@ func (r KeyRune) Compare(v Key) Order {
 		return EQUAL
 	} else if r < r2 {
 		return BEFORE
-	} else {
-		return AFTER
 	}
+	return AFTER
 }

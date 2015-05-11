@@ -1,25 +1,31 @@
 package trie
 
+// TernaryTrie implements ternary trie.
 type TernaryTrie struct {
 	root TernaryNode
 }
 
+// NewTernaryTrie returns a new TernaryTrie instance.
 func NewTernaryTrie() *TernaryTrie {
 	return &TernaryTrie{}
 }
 
+// Root returns a root node of trie.
 func (t *TernaryTrie) Root() Node {
 	return &t.root
 }
 
+// Get finds and returns a node for key.
 func (t *TernaryTrie) Get(k KeySeq) Node {
 	return Get(t, k)
 }
 
+// Put adds a pair of key and value to Trie.
 func (t *TernaryTrie) Put(k KeySeq, v interface{}) Node {
 	return Put(t, k, v)
 }
 
+// Size returns count of all nodes in trie.
 func (t *TernaryTrie) Size() int {
 	count := 0
 	EachDepth(t, func(Node) bool {
@@ -29,6 +35,7 @@ func (t *TernaryTrie) Size() int {
 	return count
 }
 
+// Balance balances all nodes in trie.
 func (t *TernaryTrie) Balance() {
 	EachDepth(t, func(n Node) bool {
 		n.(*TernaryNode).Balance()
@@ -37,6 +44,7 @@ func (t *TernaryTrie) Balance() {
 	t.root.Balance()
 }
 
+// TernaryNode represent nodes for TernaryTrie.
 type TernaryNode struct {
 	label      Key
 	firstChild *TernaryNode
@@ -44,10 +52,12 @@ type TernaryNode struct {
 	value      interface{}
 }
 
+// NewTernaryNode returns a new TernaryNode instance.
 func NewTernaryNode(l Key) *TernaryNode {
 	return &TernaryNode{label: l}
 }
 
+// Get returns a child node for a key element.
 func (n *TernaryNode) Get(k Key) Node {
 	curr := n.firstChild
 	for curr != nil {
@@ -63,6 +73,7 @@ func (n *TernaryNode) Get(k Key) Node {
 	return nil
 }
 
+// Dig creates or just returns a child node for a key element.
 func (n *TernaryNode) Dig(k Key) (node Node, isnew bool) {
 	curr := n.firstChild
 	if curr == nil {
@@ -89,14 +100,17 @@ func (n *TernaryNode) Dig(k Key) (node Node, isnew bool) {
 	}
 }
 
+// FirstChild returns first child node.
 func (n *TernaryNode) FirstChild() *TernaryNode {
 	return n.firstChild
 }
 
+// HasChildren returns true if has any children.
 func (n *TernaryNode) HasChildren() bool {
 	return n.firstChild != nil
 }
 
+// Size returns count of child nodes.
 func (n *TernaryNode) Size() int {
 	if n.firstChild == nil {
 		return 0
@@ -109,6 +123,7 @@ func (n *TernaryNode) Size() int {
 	return count
 }
 
+// Each calls proc for all child nodes.
 func (n *TernaryNode) Each(proc func(Node) bool) {
 	var f func(*TernaryNode) bool
 	f = func(n *TernaryNode) bool {
@@ -122,18 +137,22 @@ func (n *TernaryNode) Each(proc func(Node) bool) {
 	f(n.firstChild)
 }
 
+// RemoveAll removes all child nodes.
 func (n *TernaryNode) RemoveAll() {
 	n.firstChild = nil
 }
 
+// Label returns lable (key element) of node.
 func (n *TernaryNode) Label() Key {
 	return n.label
 }
 
+// Value returns value of node.
 func (n *TernaryNode) Value() interface{} {
 	return n.value
 }
 
+// SetValue set new value of node.
 func (n *TernaryNode) SetValue(v interface{}) {
 	n.value = v
 }
@@ -152,6 +171,7 @@ func (n *TernaryNode) children() []*TernaryNode {
 	return children
 }
 
+// Balance balances all child nodes.
 func (n *TernaryNode) Balance() {
 	if n.firstChild == nil {
 		return
@@ -173,11 +193,10 @@ func balance(nodes []*TernaryNode, s, e int) *TernaryNode {
 	} else if count == 2 {
 		nodes[s].high = nodes[s+1]
 		return nodes[s]
-	} else {
-		mid := (s + e) / 2
-		n := nodes[mid]
-		n.low = balance(nodes, s, mid)
-		n.high = balance(nodes, mid+1, e)
-		return n
 	}
+	mid := (s + e) / 2
+	n := nodes[mid]
+	n.low = balance(nodes, s, mid)
+	n.high = balance(nodes, mid+1, e)
+	return n
 }
