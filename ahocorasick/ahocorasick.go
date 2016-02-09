@@ -1,6 +1,8 @@
 package ahocorasick
 
 import (
+	"unicode/utf8"
+
 	"github.com/koron/gelatin/trie"
 )
 
@@ -16,6 +18,7 @@ type Match struct {
 
 type nodeData struct {
 	pattern *string
+	offset  int
 	value   interface{}
 	failure *trie.TernaryNode
 }
@@ -27,8 +30,10 @@ func New() *Matcher {
 }
 
 func (m *Matcher) Add(pattern string, v interface{}) {
+	_, n := utf8.DecodeLastRuneInString(pattern)
 	m.trie.Put(pattern, &nodeData{
 		pattern: &pattern,
+		offset:  len(pattern) - n,
 		value:   v,
 	})
 }
@@ -100,7 +105,7 @@ func fireAll(curr, root *trie.TernaryNode, ch chan<- Match, idx int) {
 		data := getNodeData(curr)
 		if data.pattern != nil {
 			ch <- Match{
-				Index:   idx - len(*data.pattern) + 1,
+				Index:   idx - data.offset,
 				Pattern: *data.pattern,
 				Value:   data.value,
 			}
