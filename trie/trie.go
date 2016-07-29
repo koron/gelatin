@@ -4,6 +4,7 @@ import (
 	"container/list"
 )
 
+// Trie provides accessors for trie-tree
 type Trie interface {
 	Root() Node
 	Get(string) Node
@@ -11,10 +12,12 @@ type Trie interface {
 	Size() int
 }
 
+// NewTrie creates a new Trie instance.
 func NewTrie() Trie {
 	return NewTernaryTrie()
 }
 
+// Get gets a node for k as key.
 func Get(t Trie, k string) Node {
 	if t == nil {
 		return nil
@@ -29,6 +32,7 @@ func Get(t Trie, k string) Node {
 	return n
 }
 
+// Put puts a pair of key and value then returns the node for it.
 func Put(t Trie, k string, v interface{}) Node {
 	if t == nil {
 		return nil
@@ -41,6 +45,7 @@ func Put(t Trie, k string, v interface{}) Node {
 	return n
 }
 
+// EachDepth enumerates nodes in trie for depth.
 func EachDepth(t Trie, proc func(Node) bool) {
 	if t == nil {
 		return
@@ -54,6 +59,7 @@ func EachDepth(t Trie, proc func(Node) bool) {
 	r.Each(f)
 }
 
+// EachWidth enumerates nodes in trie for width.
 func EachWidth(t Trie, proc func(Node) bool) {
 	if t == nil {
 		return
@@ -74,19 +80,39 @@ func EachWidth(t Trie, proc func(Node) bool) {
 	}
 }
 
+// Node provides accessors for nodes of trie-tree
 type Node interface {
+
+	// Get returns a child node for k.
 	Get(k rune) Node
+
+	// Dig digs a node for k. it returns node and a flag for whether dig or
+	// not.
 	Dig(k rune) (Node, bool)
+
+	// HasChildren returns the node hash any children or not.
 	HasChildren() bool
+
+	// Size counts descended nodes.
 	Size() int
+
+	// Each enumerates descended nodes.
 	Each(func(Node) bool)
+
+	// RemoveAll removes all descended nodes.
 	RemoveAll()
 
+	// Label returns a label rune.
 	Label() rune
+
+	// Value returns a value for the node.
 	Value() interface{}
+
+	// SetValue set a value for the node.
 	SetValue(v interface{})
 }
 
+// Children returns all children of the node.
 func Children(n Node) []Node {
 	children := make([]Node, n.Size())
 	idx := 0
